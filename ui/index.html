@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Transcribe Studio</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- Icon sprite: one definition per glyph, referenced with <use>. All drawn on
+     a 24x24 grid so every instance scales consistently. -->
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <defs>
+    <g id="i-waves" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+      <path d="M2 10v4M6 6v12M10 3v18M14 8v8M18 5v14M22 10v4" />
+    </g>
+    <g id="i-doc" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <path d="M14 2v6h6M8 13h8M8 17h5" />
+    </g>
+    <g id="i-folder" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+    </g>
+    <g id="i-plus" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
+      <path d="M12 5v14M5 12h14" />
+    </g>
+    <g id="i-x" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
+      <path d="M18 6 6 18M6 6l12 12" />
+    </g>
+    <g id="i-gear" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 10 3.09V3a2 2 0 1 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+    </g>
+    <g id="i-download" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
+    </g>
+    <g id="i-trash" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+    </g>
+    <g id="i-check" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m20 6-11 11-5-5" />
+    </g>
+    <g id="i-alert" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9" /><path d="M12 7v6M12 16.5v.01" />
+    </g>
+    <g id="i-play" fill="currentColor" stroke="none">
+      <path d="M8 5.5c0-.8.9-1.3 1.6-.9l9 6.5c.6.4.6 1.4 0 1.8l-9 6.5c-.7.4-1.6-.1-1.6-.9z" />
+    </g>
+    <g id="i-stop" fill="currentColor" stroke="none">
+      <rect x="6" y="6" width="12" height="12" rx="2.5" />
+    </g>
+    <g id="i-chevron" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m6 9 6 6 6-6" />
+    </g>
+    <g id="i-open" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+    </g>
+    <g id="i-copy" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="9" y="9" width="12" height="12" rx="2.5" />
+      <path d="M5 15a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2" />
+    </g>
+    <g id="i-coffee" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 9h13v7a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4zM17 11h1.5a2.5 2.5 0 0 1 0 5H17M7 2v3M11 2v3" />
+    </g>
+    <g id="i-cpu" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="6" y="6" width="12" height="12" rx="2" /><rect x="9.5" y="9.5" width="5" height="5" rx="1" />
+      <path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3" />
+    </g>
+    <g id="i-refresh" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12a9 9 0 1 1-2.6-6.4M21 4v5h-5" />
+    </g>
+    <g id="i-terminal" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="4" width="18" height="16" rx="2.5" /><path d="m7.5 9.5 3 2.5-3 2.5M13 15h4" />
+    </g>
+    <g id="i-md" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2.5" y="5" width="19" height="14" rx="2.5" />
+      <path d="M6 15.5v-7l3 3.5 3-3.5v7M15.5 8.5v7M15.5 15.5h3.5" />
+    </g>
+  </defs>
+</svg>
+
+<div class="app">
+  <header class="toolbar">
+    <div class="toolbar__side">
+      <div class="brand">
+        <span class="brand__mark"><svg viewBox="0 0 24 24" class="ico ico--18"><use href="#i-waves" /></svg></span>
+        <span class="brand__name">Transcribe Studio</span>
+      </div>
+    </div>
+
+    <div class="segmented" role="tablist" data-i18n-aria="tabs.aria" id="tabs">
+      <span class="segmented__thumb" data-thumb></span>
+      <button class="segmented__item is-active" role="tab" aria-selected="true" data-value="transcribe" data-i18n="tabs.transcribe">
+        <svg viewBox="0 0 24 24" class="ico ico--16"><use href="#i-waves" /></svg>Транскрибация
+      </button>
+      <button class="segmented__item" role="tab" aria-selected="false" data-value="markdown" data-i18n="tabs.markdown">
+        <svg viewBox="0 0 24 24" class="ico ico--16"><use href="#i-md" /></svg>Markdown
+      </button>
+    </div>
+
+    <div class="toolbar__side toolbar__side--trail">
+      <span class="pill pill--awake" id="wake-pill" data-i18n="toolbar.awake" hidden>
+        <svg viewBox="0 0 24 24" class="ico ico--14"><use href="#i-coffee" /></svg>Не засыпает
+      </span>
+      <button class="icon-btn" id="open-settings" data-i18n-aria="toolbar.settings" data-i18n-title="toolbar.settings">
+        <svg viewBox="0 0 24 24" class="ico ico--18"><use href="#i-gear" /></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- ───────────────────────── Транскрибация ───────────────────────── -->
+    <section class="view is-active" id="view-transcribe" role="tabpanel">
+      <div class="split">
+        <div class="split__main">
+          <div class="dropzone" id="t-drop" tabindex="0" role="button"
+               data-i18n-aria="t.drop.aria">
+            <span class="dropzone__glyph"><svg viewBox="0 0 24 24" class="ico ico--28"><use href="#i-waves" /></svg></span>
+            <p class="dropzone__title" data-i18n="t.drop.title">Перетащите аудио или видео</p>
+            <p class="dropzone__hint" data-i18n="t.drop.hint">m4a, mp3, wav, flac, mp4, mkv и другие</p>
+            <span class="btn btn--tinted dropzone__btn" data-i18n="common.choose_files">Выбрать файлы…</span>
+          </div>
+
+          <div class="panel" id="t-filepanel" hidden>
+            <div class="panel__head">
+              <h2 class="panel__title"><span data-i18n="common.queue">Очередь</span><span class="count" id="t-count">0</span></h2>
+              <div class="panel__actions">
+                <button class="btn btn--plain" id="t-add" data-i18n="common.add">
+                  <svg viewBox="0 0 24 24" class="ico ico--15"><use href="#i-plus" /></svg>Добавить
+                </button>
+                <button class="btn btn--plain btn--danger" id="t-clear" data-i18n="common.clear">Очистить</button>
+              </div>
+            </div>
+            <ul class="filelist" id="t-files"></ul>
+          </div>
+
+          <div class="panel panel--progress" id="t-progress" hidden>
+            <div class="progress__head">
+              <div class="progress__id">
+                <span class="spinner"></span>
+                <div class="progress__names">
+                  <p class="progress__file" id="t-current">—</p>
+                  <p class="progress__sub" id="t-substatus" data-i18n="t.preparing">Подготовка…</p>
+                </div>
+              </div>
+              <p class="progress__pct" id="t-pct">0%</p>
+            </div>
+            <div class="bar"><div class="bar__fill" id="t-bar"></div></div>
+            <div class="progress__stats">
+              <span id="t-stat-pos">0:00 / 0:00</span>
+              <span id="t-stat-speed">—</span>
+              <span id="t-stat-eta">—</span>
+            </div>
+            <div class="stream" id="t-stream" aria-live="polite" data-i18n-aria="t.stream.aria"></div>
+          </div>
+
+          <div class="panel" id="t-result" hidden>
+            <div class="panel__head">
+              <h2 class="panel__title" data-i18n="t.done">Готово</h2>
+              <button class="btn btn--plain" id="t-result-close" data-i18n="common.hide">Скрыть</button>
+            </div>
+            <ul class="outlist" id="t-outputs"></ul>
+          </div>
+        </div>
+
+        <!-- Inspector ─────────────────────────────────────────────────── -->
+        <aside class="inspector" data-i18n-aria="insp.aria">
+          <details class="group" open>
+            <summary class="group__head" data-i18n="insp.model_lang">
+              <svg viewBox="0 0 24 24" class="ico ico--14 group__chev"><use href="#i-chevron" /></svg>Модель и язык
+            </summary>
+            <div class="group__body">
+              <div class="field">
+                <span class="field__label" data-i18n="insp.model">Модель</span>
+                <div class="select">
+                  <select id="s-model" data-i18n-aria="insp.model.aria"></select>
+                  <svg viewBox="0 0 24 24" class="ico ico--14 select__chev"><use href="#i-chevron" /></svg>
+                </div>
+                <span class="field__note" id="s-model-note"></span>
+              </div>
+              <div class="field">
+                <span class="field__label" data-i18n="insp.language">Язык</span>
+                <div class="select">
+                  <select id="s-language" data-i18n-aria="insp.language.aria">
+                    <option value="auto" data-i18n="insp.language.auto">Определить автоматически</option>
+                    <option value="ru">Русский</option>
+                    <option value="en">English</option>
+                    <option value="uk">Українська</option>
+                    <option value="de">Deutsch</option>
+                    <option value="fr">Français</option>
+                    <option value="es">Español</option>
+                    <option value="it">Italiano</option>
+                    <option value="pl">Polski</option>
+                    <option value="tr">Türkçe</option>
+                    <option value="zh">中文</option>
+                    <option value="ja">日本語</option>
+                  </select>
+                  <svg viewBox="0 0 24 24" class="ico ico--14 select__chev"><use href="#i-chevron" /></svg>
+                </div>
+                <span class="field__note" data-i18n="insp.language.note">Явно указанный язык точнее автоопределения.</span>
+              </div>
+              <div class="field">
+                <span class="field__label" data-i18n="insp.task">Задача</span>
+                <div class="segmented segmented--sm" id="s-task">
+                  <span class="segmented__thumb" data-thumb></span>
+                  <button class="segmented__item is-active" data-value="transcribe" data-i18n="insp.task.transcribe">Расшифровать</button>
+                  <button class="segmented__item" data-value="translate" data-i18n="insp.task.translate">Перевести на EN</button>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <details class="group" open>
+            <summary class="group__head" data-i18n="insp.quality">
+              <svg viewBox="0 0 24 24" class="ico ico--14 group__chev"><use href="#i-chevron" /></svg>Качество и скорость
+            </summary>
+            <div class="group__body">
+              <div class="field">
+                <span class="field__label"><span data-i18n="insp.beam">Ширина поиска</span><b id="s-beam-val">5</b></span>
+                <input type="range" id="s-beam" min="1" max="10" step="1" value="5"
+                       data-i18n-aria="insp.beam" />
+                <span class="field__note" data-i18n="insp.beam.note">Больше — точнее и медленнее. 5 — хороший баланс.</span>
+              </div>
+              <div class="field">
+                <span class="field__label"><span data-i18n="insp.threads">Потоков CPU</span><b id="s-threads-val">авто</b></span>
+                <input type="range" id="s-threads" min="0" max="32" step="1" value="0"
+                       data-i18n-aria="insp.threads.aria" />
+                <span class="field__note" id="s-threads-note"></span>
+              </div>
+              <div class="field">
+                <span class="field__label" data-i18n="insp.compute">Вычисления</span>
+                <div class="select">
+                  <select id="s-compute" data-i18n-aria="insp.compute.aria">
+                    <option value="auto" data-i18n="compute.auto">Авто</option>
+                    <option value="int8" data-i18n="compute.int8">int8 — быстро</option>
+                    <option value="int8_float32">int8 + float32</option>
+                    <option value="float32" data-i18n="compute.float32">float32 — точно</option>
+                  </select>
+                  <svg viewBox="0 0 24 24" class="ico ico--14 select__chev"><use href="#i-chevron" /></svg>
+                </div>
+              </div>
+              <div class="switchrow">
+                <div class="switchrow__text">
+                  <p class="switchrow__title" data-i18n="insp.vad">Фильтр тишины (VAD)</p>
+                  <p class="switchrow__note" data-i18n="insp.vad.note">Пропускает паузы — заметно быстрее</p>
+                </div>
+                <button class="switch is-on" id="s-vad" role="switch" aria-checked="true"
+                        data-i18n-aria="insp.vad.aria"><span class="switch__knob"></span></button>
+              </div>
+              <div class="field">
+                <span class="field__label" data-i18n="insp.prompt">Подсказка декодеру</span>
+                <textarea id="s-prompt" rows="2" data-i18n-placeholder="insp.prompt.placeholder"
+                          data-i18n-aria="insp.prompt"></textarea>
+                <span class="field__note" data-i18n="insp.prompt.note">Помогает с именами собственными и жаргоном.</span>
+              </div>
+            </div>
+          </details>
+
+          <details class="group" open>
+            <summary class="group__head" data-i18n="insp.result">
+              <svg viewBox="0 0 24 24" class="ico ico--14 group__chev"><use href="#i-chevron" /></svg>Результат
+            </summary>
+            <div class="group__body">
+              <div class="field">
+                <span class="field__label" data-i18n="insp.formats">Форматы</span>
+                <div class="chips" id="s-formats">
+                  <button class="chip is-on" data-fmt="txt" aria-pressed="true">TXT</button>
+                  <button class="chip is-on" data-fmt="md" aria-pressed="true">MD</button>
+                  <button class="chip" data-fmt="srt" aria-pressed="false">SRT</button>
+                  <button class="chip" data-fmt="vtt" aria-pressed="false">VTT</button>
+                </div>
+                <span class="field__note" data-i18n="insp.formats.note">MD содержит метаданные и тайм-коды.</span>
+              </div>
+              <div class="field">
+                <span class="field__label" data-i18n="insp.folder">Папка</span>
+                <div class="pathrow">
+                  <span class="pathrow__value" id="s-outdir"></span>
+                  <button class="btn btn--plain" id="s-outdir-pick" data-i18n="common.choose">Выбрать</button>
+                  <button class="icon-btn icon-btn--sm" id="s-outdir-reset"
+                          data-i18n-aria="common.reset_folder">
+                    <svg viewBox="0 0 24 24" class="ico ico--14"><use href="#i-x" /></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="switchrow">
+                <div class="switchrow__text">
+                  <p class="switchrow__title" data-i18n="insp.skip">Пропускать готовые</p>
+                  <p class="switchrow__note" data-i18n="insp.skip.note">Не перезаписывать существующие файлы</p>
+                </div>
+                <button class="switch is-on" id="s-skip" role="switch" aria-checked="true"
+                        data-i18n-aria="insp.skip"><span class="switch__knob"></span></button>
+              </div>
+              <div class="switchrow">
+                <div class="switchrow__text">
+                  <p class="switchrow__title" data-i18n="insp.markitdown">Прогнать через markitdown</p>
+                  <p class="switchrow__note" data-i18n="insp.markitdown.note">Дополнительный .md из TXT тем же конвертером</p>
+                </div>
+                <button class="switch" id="s-markitdown" role="switch" aria-checked="false"
+                        data-i18n-aria="insp.markitdown"><span class="switch__knob"></span></button>
+              </div>
+              <div class="switchrow">
+                <div class="switchrow__text">
+                  <p class="switchrow__title" data-i18n="insp.sleep">Не давать уснуть</p>
+                  <p class="switchrow__note" data-i18n="insp.sleep.note">Держит ПК активным до конца расшифровки</p>
+                </div>
+                <button class="switch is-on" id="s-sleep" role="switch" aria-checked="true"
+                        data-i18n-aria="insp.sleep.aria"><span class="switch__knob"></span></button>
+              </div>
+            </div>
+          </details>
+        </aside>
+      </div>
+
+      <div class="runbar">
+        <p class="runbar__meta" id="t-runmeta" data-i18n="common.no_files">Файлы не выбраны</p>
+        <button class="btn btn--primary btn--lg" id="t-start" data-i18n="t.start" disabled>
+          <svg viewBox="0 0 24 24" class="ico ico--16"><use href="#i-play" /></svg>Начать транскрибацию
+        </button>
+        <button class="btn btn--danger-solid btn--lg" id="t-cancel" data-i18n="common.stop" hidden>
+          <svg viewBox="0 0 24 24" class="ico ico--16"><use href="#i-stop" /></svg>Остановить
+        </button>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────── Markdown ─────────────────────────── -->
+    <section class="view" id="view-markdown" role="tabpanel" hidden>
+      <div class="split split--md">
+        <div class="split__main">
+          <div class="dropzone" id="m-drop" tabindex="0" role="button"
+               data-i18n-aria="m.drop.aria">
+            <span class="dropzone__glyph"><svg viewBox="0 0 24 24" class="ico ico--28"><use href="#i-md" /></svg></span>
+            <p class="dropzone__title" data-i18n="m.drop.title">Перетащите любые файлы</p>
+            <p class="dropzone__hint" data-i18n="m.drop.hint">PDF, DOCX, XLSX, PPTX, HTML, CSV, EPUB, изображения…</p>
+            <span class="btn btn--tinted dropzone__btn" data-i18n="common.choose_files">Выбрать файлы…</span>
+          </div>
+
+          <div class="panel" id="m-filepanel" hidden>
+            <div class="panel__head">
+              <h2 class="panel__title"><span data-i18n="common.queue">Очередь</span><span class="count" id="m-count">0</span></h2>
+              <div class="panel__actions">
+                <button class="btn btn--plain" id="m-add" data-i18n="common.add">
+                  <svg viewBox="0 0 24 24" class="ico ico--15"><use href="#i-plus" /></svg>Добавить
+                </button>
+                <button class="btn btn--plain btn--danger" id="m-clear" data-i18n="common.clear">Очистить</button>
+              </div>
+            </div>
+            <ul class="filelist" id="m-files"></ul>
+            <div class="panel__foot">
+              <div class="pathrow">
+                <svg viewBox="0 0 24 24" class="ico ico--15 pathrow__ico"><use href="#i-folder" /></svg>
+                <span class="pathrow__value" id="m-outdir"></span>
+                <button class="btn btn--plain" id="m-outdir-pick" data-i18n="common.choose">Выбрать</button>
+                <button class="icon-btn icon-btn--sm" id="m-outdir-reset"
+                        data-i18n-aria="common.reset_folder">
+                  <svg viewBox="0 0 24 24" class="ico ico--14"><use href="#i-x" /></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="preview" data-i18n-aria="m.preview.aria">
+          <div class="preview__head">
+            <div class="segmented segmented--sm" id="m-viewmode">
+              <span class="segmented__thumb" data-thumb></span>
+              <button class="segmented__item is-active" data-value="rendered" data-i18n="m.view.rendered">Просмотр</button>
+              <button class="segmented__item" data-value="source" data-i18n="m.view.source">Исходник</button>
+            </div>
+            <div class="preview__actions">
+              <button class="icon-btn icon-btn--sm" id="m-copy" data-i18n-aria="m.copy.aria"
+                      data-i18n-title="m.copy" disabled><svg viewBox="0 0 24 24" class="ico ico--15"><use href="#i-copy" /></svg></button>
+              <button class="icon-btn icon-btn--sm" id="m-reveal" data-i18n-aria="common.reveal"
+                      data-i18n-title="common.reveal" disabled><svg viewBox="0 0 24 24" class="ico ico--15"><use href="#i-open" /></svg></button>
+            </div>
+          </div>
+          <div class="preview__body" id="m-body">
+            <div class="empty">
+              <svg viewBox="0 0 24 24" class="ico ico--28"><use href="#i-doc" /></svg>
+              <p data-i18n="m.empty">Результат появится здесь</p>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="runbar">
+        <p class="runbar__meta" id="m-runmeta" data-i18n="common.no_files">Файлы не выбраны</p>
+        <button class="btn btn--primary btn--lg" id="m-start" data-i18n="m.start" disabled>
+          <svg viewBox="0 0 24 24" class="ico ico--16"><use href="#i-md" /></svg>Конвертировать в Markdown
+        </button>
+        <button class="btn btn--danger-solid btn--lg" id="m-cancel" data-i18n="common.stop" hidden>
+          <svg viewBox="0 0 24 24" class="ico ico--16"><use href="#i-stop" /></svg>Остановить
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="statusbar">
+    <span class="status" id="st-env"><span class="dot"></span><span data-i18n="status.env_checking">Проверка окружения…</span></span>
+    <span class="status" id="st-model"></span>
+    <span class="status status--right" id="st-cpu"></span>
+  </footer>
+</div>
+
+<!-- Window-wide drop affordance ------------------------------------------ -->
+<div class="dropveil" id="dropveil" hidden>
+  <div class="dropveil__card">
+    <svg viewBox="0 0 24 24" class="ico ico--32"><use href="#i-download" /></svg>
+    <p id="dropveil-text" data-i18n="drop.release">Отпустите, чтобы добавить</p>
+  </div>
+</div>
+
+<!-- Settings sheet -------------------------------------------------------- -->
+<div class="backdrop" id="settings-backdrop" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <header class="sheet__head">
+      <h2 class="sheet__title" id="sheet-title" data-i18n="settings.title">Настройки</h2>
+      <button class="icon-btn" id="close-settings" data-i18n-aria="settings.close">
+        <svg viewBox="0 0 24 24" class="ico ico--18"><use href="#i-x" /></svg>
+      </button>
+    </header>
+    <div class="sheet__body">
+      <nav class="sheet__nav" data-i18n-aria="settings.nav">
+        <button class="sheet__navitem is-active" data-pane="models" data-i18n="settings.models">
+          <svg viewBox="0 0 24 24" class="ico ico--16"><use href="#i-download" /></svg>Модели
+        </button>
+        <button class="sheet__navitem" data-pane="env" data-i18n="settings.env">
+          <svg viewBox="0 0 24 24" class="ico ico--16"><use href="#i-terminal" /></svg>Окружение
+        </button>
+        <button class="sheet__navitem" data-pane="general" data-i18n="settings.general">
+          <svg viewBox="0 0 24 24" class="ico ico--16"><use href="#i-gear" /></svg>Общие
+        </button>
+      </nav>
+
+      <div class="sheet__panes">
+        <section class="pane is-active" data-pane="models">
+          <p class="pane__lead" data-i18n="models.lead"></p>
+          <div class="models" id="model-cards"></div>
+        </section>
+
+        <section class="pane" data-pane="env">
+          <div class="onboard" id="onboard" hidden>
+            <p class="onboard__title" data-i18n="onboard.title"></p>
+            <p class="onboard__text" id="onboard-text"></p>
+            <p class="onboard__step" id="onboard-step" hidden></p>
+            <button class="btn btn--primary" id="onboard-go" data-i18n="onboard.button">
+              <svg viewBox="0 0 24 24" class="ico ico--15"><use href="#i-download" /></svg>
+            </button>
+          </div>
+          <p class="pane__lead" data-i18n="env.lead"></p>
+          <div class="envgrid" id="env-grid"></div>
+          <div class="pane__actions">
+            <button class="btn btn--primary" id="env-setup" data-i18n="env.setup">
+              <svg viewBox="0 0 24 24" class="ico ico--15"><use href="#i-download" /></svg>Настроить окружение
+            </button>
+            <button class="btn btn--tinted" id="env-refresh" data-i18n="env.refresh">
+              <svg viewBox="0 0 24 24" class="ico ico--15"><use href="#i-refresh" /></svg>Проверить заново
+            </button>
+          </div>
+          <div class="console" id="env-log" hidden></div>
+        </section>
+
+        <section class="pane" data-pane="general">
+          <div class="field">
+            <span class="field__label" data-i18n="general.language"></span>
+            <div class="segmented segmented--sm" id="s-uilang">
+              <span class="segmented__thumb" data-thumb></span>
+              <button class="segmented__item" data-value="en" lang="en">English</button>
+              <button class="segmented__item" data-value="ru" lang="ru">Русский</button>
+              <button class="segmented__item" data-value="es" lang="es">Español</button>
+              <button class="segmented__item" data-value="fr" lang="fr">Français</button>
+            </div>
+          </div>
+          <div class="field">
+            <span class="field__label" data-i18n="general.theme">Оформление</span>
+            <div class="segmented segmented--sm" id="s-theme">
+              <span class="segmented__thumb" data-thumb></span>
+              <button class="segmented__item" data-value="light" data-i18n="theme.light">Светлое</button>
+              <button class="segmented__item is-active" data-value="auto" data-i18n="theme.auto">Системное</button>
+              <button class="segmented__item" data-value="dark" data-i18n="theme.dark">Тёмное</button>
+            </div>
+          </div>
+          <div class="field">
+            <span class="field__label" data-i18n="general.mdsrc">Исходники markitdown</span>
+            <div class="pathrow">
+              <span class="pathrow__value" id="s-mdsrc"></span>
+              <button class="btn btn--plain" id="s-mdsrc-pick" data-i18n="common.choose">Выбрать</button>
+              <button class="icon-btn icon-btn--sm" id="s-mdsrc-reset" data-i18n-aria="common.reset">
+                <svg viewBox="0 0 24 24" class="ico ico--14"><use href="#i-x" /></svg>
+              </button>
+            </div>
+            <span class="field__note" data-i18n="general.mdsrc.note"></span>
+          </div>
+          <div class="field">
+            <span class="field__label" data-i18n="general.data">Данные приложения</span>
+            <div class="pathrow">
+              <span class="pathrow__value" id="s-datadir"></span>
+              <button class="btn btn--plain" id="s-datadir-open" data-i18n="common.open">Открыть</button>
+            </div>
+            <span class="field__note" data-i18n="general.data.note"></span>
+          </div>
+          <p class="pane__about">Transcribe Studio 1.0 · Rust + Tauri · faster-whisper · markitdown</p>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script src="locales/en.js"></script>
+<script src="locales/ru.js"></script>
+<script src="locales/es.js"></script>
+<script src="locales/fr.js"></script>
+<script src="i18n.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

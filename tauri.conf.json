@@ -1,0 +1,55 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Transcribe Studio",
+  "version": "1.0.0",
+  "identifier": "com.fyodor.transcribe-studio",
+  "build": {
+    "frontendDist": "ui"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "main",
+        "title": "Transcribe Studio",
+        "width": 1180,
+        "height": 820,
+        "minWidth": 940,
+        "minHeight": 640,
+        "center": true,
+        "resizable": true,
+        "dragDropEnabled": true,
+        "visible": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "nsis"
+    ],
+    "icon": [
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "nsis": {
+        "languages": [
+          "English",
+          "Russian",
+          "Spanish",
+          "French"
+        ],
+        "installMode": "perMachine",
+        "displayLanguageSelector": true
+      }
+    },
+    "shortDescription": "Audio transcription and Markdown conversion",
+    "longDescription": "Local audio and video transcription with faster-whisper, and conversion of any document to Markdown with markitdown.",
+    "resources": {
+      "resources/tesseract/": "tesseract/"
+    }
+  }
+}
